@@ -4,29 +4,25 @@ import { ShoppingBag } from "lucide-react";
 
 import type { Product } from "../../data/products";
 
-interface ProductCardProps {
+interface Props {
     product: Product;
+    reviewEnabled?: boolean;
 }
 
 export default function ProductCard({
     product,
-}: ProductCardProps) {
+    reviewEnabled = true,
+}: Props) {
     const navigate = useNavigate();
 
     return (
         <div className="panel flex flex-col gap-4">
             <div className="flex h-36 items-center justify-center rounded-xl bg-slate-100">
-                <ShoppingBag
-                    size={48}
-                    className="text-slate-400"
-                />
+                <ShoppingBag size={48} className="text-slate-400" />
             </div>
 
             <div>
-                <h3 className="font-semibold text-slate-900">
-                    {product.name}
-                </h3>
-
+                <h3 className="font-semibold">{product.name}</h3>
                 <p className="mt-1 text-sm text-slate-500">
                     {product.merchant}
                 </p>
@@ -40,25 +36,28 @@ export default function ProductCard({
                 {product.features.map((feature) => (
                     <span
                         key={feature}
-                        className="rounded-full bg-slate-100 px-3 py-1 text-xs text-slate-600"
+                        className="rounded-full bg-slate-100 px-3 py-1 text-xs"
                     >
                         {feature}
                     </span>
                 ))}
             </div>
 
-            <div className="mt-auto flex items-center justify-between gap-3">
+            <div className="mt-auto flex flex-wrap items-center justify-between gap-3">
                 <span className="text-2xl font-bold">
                     ${product.price.toFixed(2)}
                 </span>
 
                 <button
                     className="primary-btn"
+                    disabled={!reviewEnabled}
                     onClick={() =>
                         navigate(`/approvals?product=${product.id}`)
                     }
                 >
-                    Review Purchase
+                    {reviewEnabled
+                        ? "Review Purchase"
+                        : "Awaiting Purchase API"}
                 </button>
             </div>
         </div>

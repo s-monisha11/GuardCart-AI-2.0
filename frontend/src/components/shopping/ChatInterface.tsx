@@ -1,55 +1,59 @@
 
 import { useState } from "react";
-import { Bot, Send } from "lucide-react";
+import { Bot, Send, LoaderCircle } from "lucide-react";
 
-interface Message {
+export interface ChatMessage {
+    id: string;
     role: "user" | "assistant";
     content: string;
 }
 
-export default function ChatInterface() {
+interface Props {
+    messages: ChatMessage[];
+    loading: boolean;
+    error: string | null;
+    onSend: (message: string) => Promise<void>;
+}
+
+export default function ChatInterface({
+    messages,
+    loading,
+    error,
+    onSend,
+}: Props) {
     const [input, setInput] = useState("");
-    const [messages, setMessages] = useState<Message[]>([
-        {
-            role: "assistant",
-            content: "Hello! What would you like to shop for today?",
-        },
-    ]);
 
-    function sendMessage() {
-        const text = input.trim();
-        if (!text) return;
+    function submit() {
+        const message = input.trim();
 
-        setMessages((previous) => [
-            ...previous,
-            { role: "user", content: text },
-            {
-                role: "assistant",
-                content:
-                    "Demo preview: Explore the sample recommendations below. Live AI recommendations are not connected yet.",
-            },
-        ]);
+        if (!message || loading) return;
 
         setInput("");
+        void onSend(message);
     }
 
     return (
-        <div className="panel">
-            <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
-                <Bot className="text-teal-700" />
+        <div className="panel flex flex-col">
+            <div className="flex items-center gap-3 border-b pb-4 border-slate-200">
+                <div className="rounded-xl bg-teal-50 p-3">
+                    <Bot className="text-teal-700" />
+                </div>
                 <div>
-                    <h2 className="font-bold">GuardCart AI</h2>
+                    <h2 className="font-bold">GuardCart AI Assistant</h2>
                     <p className="text-xs text-slate-500">
-                        Demo Shopping Assistant
+                        Intelligent Shopping Interface
                     </p>
                 </div>
             </div>
 
-            <div className="max-h-96 min-h-72 space-y-4 overflow-y-auto py-6">
-                {messages.map((message, index) => (
+            <div
+                aria-live="polite"
+                className="h-80 space-y-4 overflow-y-auto py-5"
+            >
+                {messages.map((message) => (
                     <div
-                        key={index}
-                        className={`max-w-md rounded-xl p-4 text-sm ${message.role === "user"
+                        key={message.id}
+                        className={`max-w-[85%] rounded-xl p-4 text-sm ${message.role === "user"
                                 ? "ml-auto bg-teal-700 text-white"
                                 : "bg-slate-100 text-slate-800"
                             }`}
@@ -57,28 +61,44 @@ export default function ChatInterface() {
                         {message.content}
                     </div>
                 ))}
+
+                {loading && (
+                    <div className="flex items-center gap-2 text-sm text-slate-500">
+                        <LoaderCircle className="animate-spin" size={18} />
+                        Processing your request...
+                    </div>
+                )}
             </div>
+
+            {error && (
+                <div role="alert" className="mb-3 rounded-lg bg-red-50 p-3 text-sm text-red-700">
+                    {error}
+                </div>
+            )}
 
             <form
                 className="flex gap-3 border-t border-slate-200 pt-4"
                 onSubmit={(event) => {
                     event.preventDefault();
-                    sendMessage();
+                    submit();
                 }}
             >
                 <input
                     className="field"
                     value={input}
                     onChange={(event) => setInput(event.target.value)}
-                    placeholder="Find a wireless keyboard under $50..."
+                    placeholder="Find a keyboard under $50..."
+                    disabled={loading}
+                    aria-label="Shopping request"
                 />
 
                 <button
                     type="submit"
                     className="primary-btn"
-                    aria-label="Send shopping message"
+                    disabled={loading || !input.trim()}
+                    aria-label="Send message"
                 >
-                    <Send size={19} />
+                    <Send size={20} />
                 </button>
             </form>
         </div>
