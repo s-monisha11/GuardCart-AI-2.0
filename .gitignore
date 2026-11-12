@@ -218,3 +218,31 @@ __marimo__/
 
 # Streamlit
 .streamlit/secrets.toml
+
+# ==========================================
+# GuardCart AI 2.0 — Project-specific ignores
+# ==========================================
+
+# Environment variables and credentials
+.env
+.env.*
+!.env.example
+
+# Node.js dependencies
+node_modules/
+
+# Python virtual environments
+.venv/
+
+# Temporary backups
+*.backup
+*.bak
+
+# Local database dumps
+*.dump
+*.sql.gz
+
+# Generated test outputs
+guardcart-security-results.csv
+guardcart-transactions.csv
+guardcart-transactions.json

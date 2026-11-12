@@ -133,11 +133,11 @@ export default function AIShopping() {
                 <>
                     <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                         {recommendations.map((product) => (
-                            <ProductCard
-                                key={product.id}
-                                product={product}
-                                reviewEnabled={DEMO_MODE}
-                            />
+                          <ProductCard
+    key={product.id}
+                     product={product}
+                     reviewEnabled={!DEMO_MODE}
+               />
                         ))}
                     </div>
 
