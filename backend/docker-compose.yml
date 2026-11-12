@@ -1,0 +1,18 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: guardcart
+      POSTGRES_USER: guardcart
+      POSTGRES_PASSWORD: change_me
+    ports:
+      - "5432:5432"
+    volumes:
+      - guardcart_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U guardcart -d guardcart"]
+      interval: 5s
+      timeout: 5s
+      retries: 8
+volumes:
+  guardcart_data:

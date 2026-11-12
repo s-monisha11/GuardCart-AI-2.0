@@ -23,10 +23,14 @@ export default function SecurityTestLab() {
 
     const [running, setRunning] = useState<ScenarioId | null>(null);
 
-    const completed = Object.values(results);
+    const completed = Object.values(results).filter(
+        (result): result is SecurityResult => result !== undefined
+    );
+
     const blocked = completed.filter(
         (result) => result.decision === "BLOCK"
     ).length;
+
     const allowed = completed.filter(
         (result) => result.decision === "ALLOW"
     ).length;
